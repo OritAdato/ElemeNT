@@ -1,6 +1,6 @@
 # ElemeNT
 ElemeNT is an interactive tool (implemented in Perl) for rapid and convenient detection of core promoter elements within a given sequence.
-It can be executed via the the following web interface: [ElemeNT 2023](https://www.juven-gershonlab.org/resources/element-v2023/) or executed via command line. 
+It can be executed via the following web interface: [ElemeNT 2023](https://www.juven-gershonlab.org/resources/element-v2023/) or executed via command line. 
 The content of the folders located under ElemeNT2023 include:  
 **ElemeNT/ElemeNT2023/installPackage** - zip of the installation package of ElemeNT2023 command line vesion.  
 **ElemeNT/ElemeNT2023/src/ElemeNT** - the sources of ElemeNT2023.  
@@ -20,7 +20,7 @@ Note – if needed, each PWM file’s contents can be modified to search for pos
 Make sure you leave one blank space after each “:” character in the config.txt file. 
 See “Configuration Settings” section for detailed explanations.  
 **Sample_input.txt** - is an example of input file from which the sequence/s will be read   
-**OutputElemeNT_V2023.txt** - is an example output of ElemeNT run using the sequences inc;uded within sample_input.txt as an input.   
+**OutputElemeNT_V2023.txt** - is an example output of ElemeNT run using the sequences included within sample_input.txt as an input.   
 **ElemeNT_v2023_UserGuide.pdf** - includes further details on the product and its parameter options.
 
 
