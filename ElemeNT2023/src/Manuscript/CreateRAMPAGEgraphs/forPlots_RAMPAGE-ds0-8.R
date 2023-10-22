@@ -5,18 +5,20 @@ library(forcats)
 library(utils)
 library(reader)
 
-# This script creates graph that summarizes for  dm6 RAMPAGE (devStage0-8) for every motif the precent of motifs found in specific 
+# This script creates graph that summarizes for dm6 RAMPAGE (devStage0-8) for every motif the precent of motifs found in specific 
 # position around the TSS and the mean score of all motifs in the specific postion
 #
 
 
 main_path = "C:\\Main\\Path"
 
-output_sub_path = "RAMPAGEplots0-8"
+output_sub_path ="HomerRampagePlots\\"
+
 output_dir =  paste(main_path,output_sub_path,sep="")
 setwd(output_dir)
 
-sub_path = "4RAMPAGEdm6_0-8\\"
+
+sub_path =  "4HomerRampage0-8\\"     
 lib_pref <- paste(main_path,sub_path,sep="")
 
 
@@ -28,6 +30,7 @@ plotgraph <- function(percent_fn, mean_fn, spname, f_type, motif, high_color, lo
 { 
   percent_fn = paste(lib_pref,spname,"_",f_type, "_",motif,"_percent.txt",sep="")
   percent <- read.table(percent_fn,header = TRUE)
+  
   if (substr(motif,1,3) == "DPE") {
     x_label <- "position relative to the A+1 of dInr"
   } else {
@@ -40,6 +43,7 @@ plotgraph <- function(percent_fn, mean_fn, spname, f_type, motif, high_color, lo
   colnames(percent)[1] <- "percent"
   colnames(percent) <- gsub("X", "", colnames(percent))
   
+ 
   mean_fn = paste(lib_pref,spname,"_",f_type, "_",motif,"_meanScore.txt",sep="")
   Mean <- read.table(mean_fn,header=TRUE)
   colnames(Mean)[1] <-"MeanScore"
@@ -132,14 +136,13 @@ plotgraphAll <- function(percent_fn, mean_fn, spname, f_type, motif, high_color,
 
 ######################
 #read percent and mean score
-specie_l <- list("dm6", "droSim1", "droEre2", "droAna3", "dp3")
+
 specie_l <- list("dm6")
-f_type <- 'RAMPAGEds0-8'
 motif <- 'dInr'
 high_color <- "#073801"
 low_color <- "#bbf2bb"
 
-f_type <- 'RAMPAGEds0-8all'  
+f_type <- 'HomerRampageAllDS'  
 g_height = 10
 g_width =14
 
@@ -151,7 +154,7 @@ for (spname in specie_l){
   motif <- 'dInr'
   high_color <- "#073801"
   low_color <- "#bbf2bb"
-  if (f_type == 'RAMPAGEds0-8all') {
+  if (f_type == 'HomerRampageAllDS') {
     plotgraphAll(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
   } else {
     plotgraph(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
@@ -165,7 +168,7 @@ for (spname in specie_l){
   motif <- 'DPE'
   high_color <- "#2d0357"
   low_color <- "#d8c5eb"
-  if (f_type == 'RAMPAGEds0-8all') {
+  if (f_type == 'HomerRampageAllDS') {
     plotgraphAll(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
   } else {
     plotgraph(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
@@ -177,7 +180,7 @@ for (spname in specie_l){
   motif <- 'TATA'
   high_color <- "#132B43"
   low_color <- "#bed5ed"
-  if (f_type == 'RAMPAGEds0-8all') {
+  if (f_type == 'HomerRampageAllDS') {
     plotgraphAll(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
   } else {
     plotgraph(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
@@ -190,30 +193,51 @@ for (spname in specie_l){
   motif <- 'PB'
   high_color <- "#DC0085"
   low_color <- #DB72C4"
-  if (f_type == 'RAMPAGEds0-8all') {
+  if (f_type == 'HomerRampageAllDS') {
     plotgraphAll(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
   } else {
     plotgraph(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
   }
   #  plotgraph(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
+
+
+  ##########################################################
+  #        GAGA
+  ##########################################################
+  motif <- 'GAGA'
+  high_color <-  "#3182bd"
+  low_color <-  "#deebf7"
+  if (f_type == 'HomerRampageAllDS') {
+    plotgraphAll(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
+  } else {
+    plotgraph(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
+  }
+  
+  ##########################################################
+  #        Motif1
+  ##########################################################
+  motif <- 'Motif1'
+  high_color <-  "#31a354"
+  low_color <- "#e5f5e0"
+  if (f_type == 'HomerRampageAllDS') {
+    plotgraphAll(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
+  } else {
+    plotgraph(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
+  }
+  
   
   ##########################################################
   #        dTCT
   ##########################################################
- # motif <- 'dTCT'
-#  high_color <- "#753304"
-#  low_color <- "#edbe9d"
-#  plotgraph(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color)
- 
+  motif <- 'dTCT'
+  high_color <- "#753304"
+  low_color <- "#edbe9d"
+  if (f_type == 'HomerRampageAllDS') {
+    plotgraphAll(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
+  } else {
+    plotgraph(percent_fn, mean_fn, spname, f_type, motif, high_color, low_color, plot_sufix, g_width,  g_height)
+  }
   
-}
   
+}  
 
-# #colorsTake2
-# #Inr:   high = "#073801", low = "#bbf2bb"         #green
-# #TATA:  high = "#132B43", low = "#bed5ed"         #blue
-# #TCT:   high = "#753304", low = "#edbe9d"         #brown/orange
-# #downstream:  high = "#2d0357", low = "#d8c5eb"   #purple
-# #misc: high = "#4a030c", low = "#d9b0b5"          #red
-# #grey: high = "#000000", low = "#e8e8e8"          #grey
-# 
