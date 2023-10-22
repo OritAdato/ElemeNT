@@ -3,9 +3,10 @@ import glob
 from genProc import *
 import pandas as pd
 import pybedtools
+import sys
 
 # This program uses as input the TSS peak calling output files created by the analysis of nascent RNA data using
-# using HOMER csRNA-seq Analysis utility. Based on the TSS peaks it created bed files for downloading +- bp around
+# using HOMER csRNA-seq Analysis utility. Based on the TSS peaks it created bed files for downloading +-100 bp around
 # TSS. Using pybedtools it downloads the genomic sequences, adds them the gene annotations (annotated by HOMER)
 # and send them as input to ElemeNT utility for searching corepromoter elements
 #
@@ -15,24 +16,28 @@ def isnan(value):
         return math.isnan(float(value))
     except:
         return False
-def get_specie_fasta_dir(specie_name):
+def get_specie_fasta_dir(specie_name, genome_mainPath):
     if specie_name == 'dp3':
-        specie_fasta_dir = "//SpecieGenomePath//Databases//Drosophila//Drosophila_pseudoobscura//UCSC//dp3//WholeGenome//dp3.fa"
+        specie_fasta_dir = os.path.join(genome_mainPath,
+                                        "Drosophila_pseudoobscura//UCSC//dp3//WholeGenome//dp3.fa")
     else:
         if specie_name == 'dm6':
-            specie_fasta_dir = "//SpecieGenomePath//Databases//Drosophila//Drosophila_melanogaster//UCSC//dm6//Sequence//WholeGenomeFasta//genome.fa"
+            specie_fasta_dir = os.path.join(genome_mainPath, \
+                "Drosophila_melanogaster//UCSC//dm6//Sequence//WholeGenomeFasta//genome.fa")
         else:
             if specie_name == 'droAna3':
-                specie_fasta_dir = "//SpecieGenomePath//Databases//Drosophila//Drosophila_ananassae//UCSC//droAna3//WholeGenomeFasta//droAna3.fa"
+                specie_fasta_dir = os.path.join(genome_mainPath,
+                                       "Drosophila_ananassae//UCSC//droAna3//WholeGenomeFasta//droAna3.fa")
             else:
                 if specie_name == 'droSim1':
-                    specie_fasta_dir = "//SpecieGenomePath//Databases//Drosophila//Drosophila_simulans//UCSC//droSim1//WholeGenomeFasta//droSim1.fa"
+                    specie_fasta_dir = os.path.join(genome_mainPath,
+                                        "Drosophila_simulans//UCSC//droSim1//WholeGenomeFasta//droSim1.fa")
                 else:
                     if specie_name == 'droEre2':
-                        specie_fasta_dir = "//SpecieGenomePath//Databases//Drosophila//Drosophila_erecta//UCSC//droEre2//WholeGenomeFasta//droEre2.fa"
+                        specie_fasta_dir = os.path.join(genome_mainPath,
+                                             "Drosophila_erecta//UCSC//droEre2//WholeGenomeFasta//droEre2.fa")
                     else:
                         specie_fasta_dir = ' '
-
 
     return specie_fasta_dir
 
@@ -132,15 +137,36 @@ def prepare_ElemeNT_config_final(fasta_name,output_name,gc,ElemeNT_dir,startCons
                             else:
                                 # Order: hInr, dInr, GAGA, BREu, TATA, BREd, XCPE1, XCPE2, Motif1, hTCT, dTCT, PB, BBCABW;
                                 if line[:5] =='Order':
-                                    output_line = 'Order: dInr, GAGA, BREu, TATA, BREd, XCPE1, XCPE2, Motif1, dTCT, PB' + ';\n'
+                                    output_line = 'Order: dInr, GAGA, BREu, TATA, BREd, XCPE1, XCPE2, Motif1, dTCT, PB' \
+                                                  + ';\n'
                                     config_f.write(output_line)
                                 else:
                                     config_f.write(line)
     config_f.close()
     return
 
-dir_mainPath = "//Main//Path"
-input_dir = os.path.join(dir_mainPath,"csRNAseq")
+print(sys.argv[0])
+for i in range(1, len(sys.argv)):
+    print('argument:', i, 'value:', sys.argv[i])
+    if i== 1:
+        dir_mainPath = sys.argv[i]
+    else:
+        if i==2: # i=2
+            genome_mainPath = sys.argv[i]
+        else:  # i=3
+            inputFiles_type = sys.argv[i]
+
+
+ElemeNT_dir = os.path.join(dir_mainPath, "csRNAseq",'ElemeNT_V22')
+
+if inputFiles_type == 'RAMPAGE':
+    dir_mainPath = os.path.join(dir_mainPath,"scripts/pipelineOut/GSE89299.dm6/HOMER")
+    input_dir = os.path.join(dir_mainPath, "findcsRNATSSoutput")
+    fileName_prefix = 'tssAnalysis_GSM*.tss.txt'
+else:
+    input_dir = os.path.join(dir_mainPath,"csRNAseq")
+    fileName_prefix = 'cas9*.tss.txt'
+
 width = 150
 
 specie_name = 'dm6'
@@ -151,14 +177,14 @@ smooth = 10
 
 targetFasta_dir = create_chippeak_dir(input_dir, 'ncRNAfasta_w' + str(width))
 ElemeNT_out_dir = create_chippeak_dir(input_dir, 'ElemeNTout')
-for ncRNAfn in glob.glob(os.path.join(input_dir, 'cas9*.tss.txt')):
+for ncRNAfn in glob.glob(os.path.join(input_dir, fileName_prefix)):
     basefn = os.path.basename(ncRNAfn)
     targetBed_dir = create_chippeak_dir(input_dir, 'bed4fasta')
     ncRNA_df = pd.read_csv(ncRNAfn,header=0, sep='\t')
     ncRNA_tssOnly_df = ncRNA_df.loc[ncRNA_df['annotation']=='tss',:]
-    fasta_fn = get_specie_fasta_dir(specie_name)
+    fasta_fn = get_specie_fasta_dir(specie_name, genome_mainPath)
     target_fn = create_CoordinatesBed(ncRNA_tssOnly_df,basefn,targetBed_dir)
-    #print (target_fn, '\n fasta:', fasta_fn)
+    
     fasta_WithN_fn = extract_seq4bed(target_fn,fasta_fn,targetFasta_dir)
     fasta_WgeneName_fn = addGeneName2fasta(fasta_WithN_fn,ncRNA_df)
 
@@ -166,7 +192,6 @@ for ncRNAfn in glob.glob(os.path.join(input_dir, 'cas9*.tss.txt')):
 
     output_fn = basefn[:-6] + '_start' + str(startConstant) + 'smooth' + str(smooth) + '.txt'
     output_name = os.path.join(ElemeNT_out_dir,output_fn)
-    ElemeNT_dir = os.path.join(input_dir,'ElemeNT_V22')
     prepare_ElemeNT_config_final(fasta_WgeneName_fn, output_name, gc, ElemeNT_dir,startConstant,smooth)
     #print('current dir is: ', os.getcwd())
     os.system('ElemeNT_V2023_binary')

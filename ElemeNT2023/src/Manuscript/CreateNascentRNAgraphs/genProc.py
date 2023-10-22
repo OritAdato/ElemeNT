@@ -14,26 +14,6 @@ def create_chippeak_dir(specie_sga_dir,dir2create):
     chippeak_dir=os.path.join(specie_sga_dir, dir2create)
     return (chippeak_dir)
 
-def get_specie_fasta_dir(specie_name):
-    if specie_name == 'dp3':
-        specie_fasta_dir = "//private//Databases//Drosophila//Drosophila_pseudoobscura//UCSC//dp3//WholeGenome//dp3.fa"
-    else:
-        if specie_name == 'dm6':
-            specie_fasta_dir = "//private//Databases//Drosophila//Drosophila_melanogaster//UCSC//dm6//Sequence//WholeGenomeFasta//genome.fa"
-        else:
-            if specie_name == 'droAna3':
-                specie_fasta_dir = "//private//Databases//Drosophila//Drosophila_ananassae//UCSC//droAna3//WholeGenomeFasta//droAna3.fa"
-            else:
-                if specie_name == 'droSim1':
-                    specie_fasta_dir = "//private//Databases//Drosophila//Drosophila_simulans//UCSC//droSim1//WholeGenomeFasta//droSim1.fa"
-                else:
-                    if specie_name == 'droEre2':
-                        specie_fasta_dir = "//private//Databases//Drosophila//Drosophila_erecta//UCSC//droEre2//WholeGenomeFasta//droEre2.fa"
-                    else:
-                        specie_fasta_dir = ' '
-
-
-    return specie_fasta_dir
 
 #The following proc (split_longName, ) were copied from prepCommonGeneElemetsTable.py
 def split_longName(elemeNTout_devStage_df):

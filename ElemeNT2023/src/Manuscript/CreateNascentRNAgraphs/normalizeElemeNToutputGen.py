@@ -2,6 +2,7 @@ import glob
 import os
 import pandas as pd
 from genProc import *
+import sys
 
 # This program 'normalizes' the ElemeNT output so that for every sequence, every motif in every position appears
 # in a separate line and also adds to the line the motif sequence that was detected in the specific postion
@@ -197,18 +198,30 @@ def save_summary_filesForSpecie(specie_name,pipelineOut_dir,sum_df,motifSum_df):
 
     return
 
-dir_mainPath = "//data//old_data//orit//ElementCons"
+print(sys.argv[0])
+for i in range(1, len(sys.argv)):
+    print('argument:', i, 'value:', sys.argv[i])
+    if i== 1:
+        dir_mainPath = sys.argv[i]
+    else:
+        if i==2: # i=2
+            inputFiles_type = sys.argv[i]
+
 motifsInfo_dir = os.path.join(dir_mainPath,'scripts//Motifs')
+if inputFiles_type == 'RAMPAGE':
+    dir_mainPath = os.path.join(dir_mainPath,"scripts/pipelineOut/GSE89299.dm6/HOMER")
+    fileName_prefix = 'tssAnalysis_GSM*'
+    ncRna_dir = os.path.join(dir_mainPath, "findcsRNATSSoutput")
+else:
+    fileName_prefix = 'cas9*'
+    ncRna_dir = os.path.join(dir_mainPath, "csRNAseq")
+specie_fasta_dir = os.path.join(ncRna_dir, "ncRNAfasta_w150")
 
 motifPosNlen_fn = os.path.join(motifsInfo_dir,'motifs_len.csv')
 motifLen_df = pd.read_csv(motifPosNlen_fn,sep=',',header=0)
 
 tss_start =100
 specie_name = 'dm6'
-
-ncRna_dir = os.path.join(dir_mainPath,"csRNAseq")
-specie_fasta_dir = os.path.join(dir_mainPath,"csRNAseq//ncRNAfasta_w150")
-
 
 specie_elemeNTout_dir = os.path.join(ncRna_dir, 'ElemeNTout')
 suffix = 'start' + str(tss_start) + 'smooth10.txt'
@@ -218,7 +231,7 @@ sum_df = create_summary_df(specie_name)
 motifSum_df = create_summary_df(specie_name)
 
 # For every specie and every dev stage reading the output of ElemeNT:
-for ElemenNT_outFile in glob.glob(os.path.join(specie_elemeNTout_dir, 'cas9*' + suffix)):
+for ElemenNT_outFile in glob.glob(os.path.join(specie_elemeNTout_dir, fileName_prefix + suffix)):
 
     ElemenNT_out_fn = os.path.basename(ElemenNT_outFile)
     ElemenNTnormalized_out_fn = ElemenNT_out_fn[:-4] + '_norm.csv'
